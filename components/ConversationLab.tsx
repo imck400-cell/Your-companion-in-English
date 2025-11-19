@@ -26,7 +26,8 @@ const ConversationLab: React.FC<Props> = ({ user, addPoints, lang }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Gemini history format
-  const history = useRef<{role: string, parts: {text: string}[]}[]>([]);
+  // We use 'any' here to prevent strict type conflicts with the SDK's Content interface during build
+  const history = useRef<any[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

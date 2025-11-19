@@ -3,7 +3,8 @@ import { GoogleGenAI, Type, Content } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
 
 // Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Ensure API_KEY is treated as a string to prevent build errors with strict null checks
+const ai = new GoogleGenAI({ apiKey: (process.env.API_KEY as string) || "" });
 
 export const determineLevel = async (answers: string[]): Promise<UserLevel> => {
   const prompt = `
@@ -124,10 +125,10 @@ export const generateArticle = async (topic: string, level: UserLevel): Promise<
   }
 };
 
-export const getChatResponse = async (history: any[], message: string, level: UserLevel, persona: string) => {
+export const getChatResponse = async (history: Content[], message: string, level: UserLevel, persona: string) => {
     const chat = ai.chats.create({
         model: 'gemini-2.5-flash',
-        history: history as Content[],
+        history: history,
         config: {
             systemInstruction: `You are an English conversation partner roleplaying as: ${persona}. The user is a ${level} level learner. Correct major mistakes gently in the flow of conversation. Keep responses concise and engaging.`
         }
@@ -208,7 +209,7 @@ export const generateVocabularySet = async (level: UserLevel, excludeWords: stri
         }
       });
   
-      return JSON.parse(response.text || "{}");
+      return JSON.parse(response.text || "{}") as { isCorrect: boolean, feedback: string };
     } catch (error) {
       return { isCorrect: false, feedback: "Connection error. Please try again." };
     }
