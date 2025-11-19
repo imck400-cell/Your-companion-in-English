@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, Language, VocabularyItem, QuestionType, UserLevel } from '../types';
 import { generateVocabularySet, validateTranslation } from '../services/geminiService';
-import { Mic, Volume2, Check, X, ArrowRight, Loader2, PenTool, Globe, SkipForward, AlertCircle, Layers, Trophy, BarChart, Home, RefreshCcw } from 'lucide-react';
+import { Mic, Volume2, Check, X, ArrowRight, Loader2, PenTool, Globe, SkipForward, AlertCircle, Layers, Trophy, Home, RefreshCcw } from 'lucide-react';
 import { t } from '../utils/translations';
 import { useNavigate } from 'react-router-dom';
 

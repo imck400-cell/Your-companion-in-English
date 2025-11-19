@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Content } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
 
 // Initialize Gemini Client
@@ -124,10 +124,10 @@ export const generateArticle = async (topic: string, level: UserLevel): Promise<
   }
 };
 
-export const getChatResponse = async (history: {role: string, parts: {text: string}[]}[], message: string, level: UserLevel, persona: string) => {
+export const getChatResponse = async (history: any[], message: string, level: UserLevel, persona: string) => {
     const chat = ai.chats.create({
         model: 'gemini-2.5-flash',
-        history: history,
+        history: history as Content[],
         config: {
             systemInstruction: `You are an English conversation partner roleplaying as: ${persona}. The user is a ${level} level learner. Correct major mistakes gently in the flow of conversation. Keep responses concise and engaging.`
         }

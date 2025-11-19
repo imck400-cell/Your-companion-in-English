@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { UserProfile, Language } from '../types';
-import { Trophy, Target, Zap, GraduationCap, Mic2 } from 'lucide-react';
+import { Trophy, Target, GraduationCap, Mic2 } from 'lucide-react';
 import { t } from '../utils/translations';
 import { useNavigate } from 'react-router-dom';
 

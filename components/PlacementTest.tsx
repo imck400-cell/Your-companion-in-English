@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { determineLevel } from '../services/geminiService';
 import { UserLevel, Language } from '../types';
 

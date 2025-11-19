@@ -1,7 +1,8 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile, ChatMessage, Language } from '../types';
 import { getChatResponse } from '../services/geminiService';
-import { Send, User, Bot, Mic, Volume2, RefreshCw, MessageCircle } from 'lucide-react';
+import { Send, Volume2, RefreshCw, MessageCircle } from 'lucide-react';
 import { t } from '../utils/translations';
 
 interface Props {
