@@ -1,0 +1,7 @@
+{
+  "name": "LinguistAI - Intelligent English Tutor",
+  "description": "A comprehensive AI-powered English learning platform featuring placement tests, smart correction, conversation labs, and gamified learning paths using Google Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
