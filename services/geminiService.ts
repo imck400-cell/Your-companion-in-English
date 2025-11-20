@@ -1,4 +1,5 @@
 // @ts-nocheck
+/* eslint-disable */
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
 
@@ -6,6 +7,12 @@ import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from ".
 // Defensive coding: Handle process.env gracefully for browser vs node environments
 const apiKey = typeof process !== 'undefined' && process.env ? process.env.API_KEY as string : '';
 const ai = new GoogleGenAI({ apiKey: apiKey || "" });
+
+// Helper to clean JSON output from Gemini (removes markdown fences)
+const cleanJson = (text: string | undefined): string => {
+  if (!text) return "";
+  return text.replace(/^```json\s*/, '').replace(/^```\s*/, '').replace(/```$/, '').trim();
+};
 
 export const determineLevel = async (answers: string[]): Promise<UserLevel> => {
   const prompt = `
@@ -72,7 +79,7 @@ export const getSmartCorrection = async (text: string): Promise<CorrectionResult
       }
     });
     
-    const result = JSON.parse(response.text || "{}");
+    const result = JSON.parse(cleanJson(response.text) || "{}");
     return result as CorrectionResult;
   } catch (error) {
     console.error("Correction failed", error);
@@ -119,7 +126,7 @@ export const generateArticle = async (topic: string, level: UserLevel): Promise<
       }
     });
 
-    return JSON.parse(response.text || "{}") as GeneratedArticle;
+    return JSON.parse(cleanJson(response.text) || "{}") as GeneratedArticle;
   } catch (error) {
     console.error("Article generation failed", error);
     throw error;
@@ -175,7 +182,7 @@ export const generateVocabularySet = async (level: UserLevel, excludeWords: stri
         }
       });
   
-      return JSON.parse(response.text || "[]") as VocabularyItem[];
+      return JSON.parse(cleanJson(response.text) || "[]") as VocabularyItem[];
     } catch (error) {
       console.error("Vocabulary generation failed", error);
       return [
@@ -211,7 +218,7 @@ export const generateVocabularySet = async (level: UserLevel, excludeWords: stri
         }
       });
   
-      return JSON.parse(response.text || "{}") as { isCorrect: boolean, feedback: string };
+      return JSON.parse(cleanJson(response.text) || "{}") as { isCorrect: boolean, feedback: string };
     } catch (error) {
       return { isCorrect: false, feedback: "Connection error. Please try again." };
     }

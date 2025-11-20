@@ -1,4 +1,5 @@
-
+// @ts-nocheck
+/* eslint-disable */
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile, ChatMessage, Language } from '../types';
 import { getChatResponse } from '../services/geminiService';

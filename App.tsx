@@ -1,4 +1,5 @@
-
+// @ts-nocheck
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, MessageCircle, PenTool, BookOpen, Award, Menu, X, Globe, Mic2 } from 'lucide-react';

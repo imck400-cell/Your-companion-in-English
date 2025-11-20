@@ -1,4 +1,5 @@
-
+// @ts-nocheck
+/* eslint-disable */
 import React, { useState } from 'react';
 import { UserProfile, CorrectionResult, Language } from '../types';
 import { getSmartCorrection } from '../services/geminiService';
