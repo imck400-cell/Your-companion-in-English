@@ -17,6 +17,14 @@ import { t, isRTL } from './utils/translations';
 // Simple Store Implementation
 const useAppStore = () => {
   const [user, setUser] = useState<UserProfile>(() => {
+    if (typeof window === 'undefined') return {
+        name: 'Learner',
+        level: UserLevel.Beginner,
+        points: 0,
+        completedLessons: 0,
+        isLevelAssessed: false,
+        learnedWords: []
+    };
     const saved = localStorage.getItem('linguistAI_user');
     return saved ? { 
       ...JSON.parse(saved),
@@ -32,14 +40,17 @@ const useAppStore = () => {
   });
 
   const [lang, setLang] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'ar';
     return (localStorage.getItem('linguistAI_lang') as Language) || 'ar';
   });
 
   const [hasStarted, setHasStarted] = useState(() => {
+    if (typeof window === 'undefined') return false;
     return localStorage.getItem('linguistAI_started') === 'true';
   });
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light';
     return (localStorage.getItem('linguistAI_theme') as 'light' | 'dark') || 'light';
   });
 

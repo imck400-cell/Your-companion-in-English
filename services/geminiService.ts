@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type, Content } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
 
 // Initialize Gemini Client
@@ -125,7 +125,8 @@ export const generateArticle = async (topic: string, level: UserLevel): Promise<
   }
 };
 
-export const getChatResponse = async (history: Content[], message: string, level: UserLevel, persona: string) => {
+// Changed history type to any[] to prevent strict type build errors with SDK exports
+export const getChatResponse = async (history: any[], message: string, level: UserLevel, persona: string) => {
     const chat = ai.chats.create({
         model: 'gemini-2.5-flash',
         history: history,
@@ -140,7 +141,7 @@ export const getChatResponse = async (history: Content[], message: string, level
 
 // NEW: Generate Vocabulary Practice Set
 export const generateVocabularySet = async (level: UserLevel, excludeWords: string[] = []): Promise<VocabularyItem[]> => {
-    // We limit excluded words to the last 100 to avoid token limits, though 1.5 flash has a large context window.
+    // We limit excluded words to the last 100 to avoid token limits
     const exclusionList = excludeWords.slice(-100).join(", ");
     
     const prompt = `
