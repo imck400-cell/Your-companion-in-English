@@ -13,14 +13,6 @@ interface Props {
   lang: Language;
 }
 
-// Setup Speech Recognition interface
-declare global {
-  interface Window {
-    webkitSpeechRecognition: any;
-    SpeechRecognition: any;
-  }
-}
-
 const VocabularyPractice: React.FC<Props> = ({ user, addPoints, markWordAsLearned, lang }) => {
   const navigate = useNavigate();
   const [practiceLevel, setPracticeLevel] = useState<UserLevel>(user.level);
@@ -87,12 +79,14 @@ const VocabularyPractice: React.FC<Props> = ({ user, addPoints, markWordAsLearne
 
   // Pronunciation Logic
   const startListening = () => {
-    if (!('webkitSpeechRecognition' in window)) {
+    // Use type assertion to avoid global declaration conflicts
+    const win = window as any;
+    if (!('webkitSpeechRecognition' in win) && !('SpeechRecognition' in win)) {
       alert("Speech recognition not supported in this browser. Please type the word instead.");
       return;
     }
     
-    const Recognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const Recognition = win.webkitSpeechRecognition || win.SpeechRecognition;
     const recognition = new Recognition();
     recognition.lang = 'en-US';
     recognition.interimResults = false;

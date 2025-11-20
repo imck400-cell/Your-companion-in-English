@@ -2,9 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
 
+// Ensure process is defined for types if missing in environment
+declare const process: any;
+
 // Initialize Gemini Client
-// Ensure API_KEY is treated as a string to prevent build errors with strict null checks
-const ai = new GoogleGenAI({ apiKey: (process.env.API_KEY as string) || "" });
+// Defensive coding: Handle process.env gracefully for browser vs node environments
+const apiKey = typeof process !== 'undefined' && process.env ? process.env.API_KEY as string : '';
+const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
 export const determineLevel = async (answers: string[]): Promise<UserLevel> => {
   const prompt = `
@@ -125,11 +129,11 @@ export const generateArticle = async (topic: string, level: UserLevel): Promise<
   }
 };
 
-// Changed history type to any[] to prevent strict type build errors with SDK exports
+// Explicitly using any[] for history to strictly avoid 'Content' type mismatches during build
 export const getChatResponse = async (history: any[], message: string, level: UserLevel, persona: string) => {
     const chat = ai.chats.create({
         model: 'gemini-2.5-flash',
-        history: history,
+        history: history as any, // Casting to any to bypass strict SDK type checks
         config: {
             systemInstruction: `You are an English conversation partner roleplaying as: ${persona}. The user is a ${level} level learner. Correct major mistakes gently in the flow of conversation. Keep responses concise and engaging.`
         }
