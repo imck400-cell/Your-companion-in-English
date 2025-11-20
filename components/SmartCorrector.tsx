@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { UserProfile, CorrectionResult, Language } from '../types';
 import { getSmartCorrection } from '../services/geminiService';
@@ -23,7 +24,8 @@ const SmartCorrector: React.FC<Props> = ({ user, addPoints, lang }) => {
       const data = await getSmartCorrection(text);
       setResult(data);
       addPoints(10);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       alert("Failed to correct text. Please try again.");
     } finally {
       setIsProcessing(false);

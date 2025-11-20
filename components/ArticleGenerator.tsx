@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { UserProfile, GeneratedArticle, Language } from '../types';
 import { generateArticle } from '../services/geminiService';
@@ -23,7 +24,8 @@ const ArticleGenerator: React.FC<Props> = ({ user, addPoints, lang }) => {
       const data = await generateArticle(topic, user.level);
       setArticle(data);
       addPoints(15);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       alert("Could not generate article.");
     } finally {
       setLoading(false);

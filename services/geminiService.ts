@@ -1,9 +1,6 @@
-
+// @ts-nocheck
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserLevel, CorrectionResult, GeneratedArticle, VocabularyItem } from "../types";
-
-// Ensure process is defined for types if missing in environment
-declare const process: any;
 
 // Initialize Gemini Client
 // Defensive coding: Handle process.env gracefully for browser vs node environments

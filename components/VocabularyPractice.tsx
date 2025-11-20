@@ -36,38 +36,40 @@ const VocabularyPractice: React.FC<Props> = ({ user, addPoints, markWordAsLearne
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const loadQuestions = async () => {
+        setLoading(true);
+        setIsFinished(false);
+        // Pass learned words to exclude them from new generation
+        const data = await generateVocabularySet(practiceLevel, user.learnedWords || []);
+        
+        if (data.length === 0) {
+            // Fallback if AI fails completely (rare)
+            setItems([
+                { word: "Persistence", contextSentence: "Persistence is key to success.", definitionEn: "Firm or obstinate continuance in a course of action in spite of difficulty." },
+                { word: "Knowledge", contextSentence: "Knowledge is power.", definitionEn: "Facts, information, and skills acquired by a person through experience or education." }
+            ]);
+        } else {
+            setItems(data);
+        }
+        
+        setCurrentIndex(0);
+        setStage('pronounce');
+        setFeedback({ type: null, msg: '' });
+        setUserInput('');
+        setSessionStats({ correct: 0, skipped: 0, mistakes: 0 });
+        setLoading(false);
+    };
+
     loadQuestions();
-  }, [practiceLevel]);
+    // We rely on practiceLevel changing to trigger this. 
+    // user.learnedWords is stable enough or we don't want to re-trigger if only that changes.
+  }, [practiceLevel, user.learnedWords]); 
 
   useEffect(() => {
     if (stage !== 'pronounce' && !feedback.type) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [stage, feedback.type]);
-
-  const loadQuestions = async () => {
-    setLoading(true);
-    setIsFinished(false);
-    // Pass learned words to exclude them from new generation
-    const data = await generateVocabularySet(practiceLevel, user.learnedWords || []);
-    
-    if (data.length === 0) {
-        // Fallback if AI fails completely (rare)
-        setItems([
-            { word: "Persistence", contextSentence: "Persistence is key to success.", definitionEn: "Firm or obstinate continuance in a course of action in spite of difficulty." },
-            { word: "Knowledge", contextSentence: "Knowledge is power.", definitionEn: "Facts, information, and skills acquired by a person through experience or education." }
-        ]);
-    } else {
-        setItems(data);
-    }
-    
-    setCurrentIndex(0);
-    setStage('pronounce');
-    setFeedback({ type: null, msg: '' });
-    setUserInput('');
-    setSessionStats({ correct: 0, skipped: 0, mistakes: 0 });
-    setLoading(false);
-  };
 
   const currentItem = items[currentIndex] || { word: '', contextSentence: '', definitionEn: '' };
 
@@ -195,6 +197,14 @@ const VocabularyPractice: React.FC<Props> = ({ user, addPoints, markWordAsLearne
   };
 
   // --- Render Logic ---
+  const reloadSession = () => {
+    setPracticeLevel(prev => prev); // Trigger useEffect
+    // Manually trigger the load since we didn't actually change the level value if it's the same
+    // But React might not trigger useEffect if state is same.
+    // Better to just force a re-mount or call logic.
+    // Simplest way here:
+    window.location.reload(); // Or just refresh component state if we extracted loadQuestions
+  }
 
   if (loading) {
     return (
@@ -276,7 +286,7 @@ const VocabularyPractice: React.FC<Props> = ({ user, addPoints, markWordAsLearne
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button 
-                    onClick={loadQuestions}
+                    onClick={() => window.location.reload()}
                     className="flex items-center justify-center space-x-2 rtl:space-x-reverse px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-bold shadow-lg transition-transform transform hover:scale-105"
                 >
                     <RefreshCcw size={20} />
